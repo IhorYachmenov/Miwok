@@ -19,23 +19,24 @@ public class NumbersActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_numbers);
 
-        ArrayList<String> numbers = new ArrayList<String>();
-        numbers.add("one");
-        numbers.add("two");
-        numbers.add("three");
-        numbers.add("four");
-        numbers.add("five");
-        numbers.add("six");
-        numbers.add("seven");
-        numbers.add("eight");
-        numbers.add("nine");
-        numbers.add("ten");
 
-        Log.v("NumbersActivity", "Numbers at index: " + numbers.get(0));
+        ArrayList<Word> words = new ArrayList<Word>();
+        words.add(new Word("one","lutti"));
+        words.add(new Word("one", "lutti"));
+        words.add(new Word("two", "otiiko"));
+        words.add(new Word("three", "tolookosu"));
+        words.add(new Word("four", "oyyisa"));
+        words.add(new Word("five", "massokka"));
+        words.add(new Word("six", "temmokka"));
+        words.add(new Word("seven", "kenekaku"));
+        words.add(new Word("eight", "kawinta"));
+        words.add(new Word("nine", "wo’e"));
+        words.add(new Word("ten", "na’aacha"));
+        Log.v("NumbersActivity", "Numbers at index: " + words.get(0));
 
         //LinearLayout rootView = (LinearLayout) findViewById(R.id.rootView);
 
-        int counter = 0;
+        //int counter = 0;
 
 
 //        TextView displayWords = new TextView(this);
@@ -57,11 +58,13 @@ public class NumbersActivity extends AppCompatActivity {
 //        }
 
 
-        ArrayAdapter<String> itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, numbers);
+      // ArrayAdapter<String> itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, numbers);
 
+
+        WordAdapter adapter = new WordAdapter(this, words);
         ListView listView = (ListView) findViewById(R.id.list);
 
-        listView.setAdapter(itemsAdapter);
+        listView.setAdapter(adapter);
 
     }
 }
