@@ -19,19 +19,20 @@ public class NumbersActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_numbers);
 
+        int id = getResources().getIdentifier("ic_launcher", "mipmap", this.getPackageName());
 
         ArrayList<Word> words = new ArrayList<Word>();
-        words.add(new Word("one","lutti"));
-        words.add(new Word("one", "lutti"));
-        words.add(new Word("two", "otiiko"));
-        words.add(new Word("three", "tolookosu"));
-        words.add(new Word("four", "oyyisa"));
-        words.add(new Word("five", "massokka"));
-        words.add(new Word("six", "temmokka"));
-        words.add(new Word("seven", "kenekaku"));
-        words.add(new Word("eight", "kawinta"));
-        words.add(new Word("nine", "wo’e"));
-        words.add(new Word("ten", "na’aacha"));
+        words.add(new Word("one","lutti", id));
+        words.add(new Word("one", "lutti", id));
+        words.add(new Word("two", "otiiko", id));
+        words.add(new Word("three", "tolookosu", id));
+        words.add(new Word("four", "oyyisa", id));
+        words.add(new Word("five", "massokka", id));
+        words.add(new Word("six", "temmokka", id));
+        words.add(new Word("seven", "kenekaku", id));
+        words.add(new Word("eight", "kawinta", id));
+        words.add(new Word("nine", "wo’e", id));
+        words.add(new Word("ten", "na’aacha", id));
         Log.v("NumbersActivity", "Numbers at index: " + words.get(0));
 
         //LinearLayout rootView = (LinearLayout) findViewById(R.id.rootView);
