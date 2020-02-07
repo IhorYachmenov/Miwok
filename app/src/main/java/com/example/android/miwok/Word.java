@@ -17,6 +17,13 @@ public class Word {
      * @param vNumber is the corresponding Android version number (e.g. 2.3-2.7)
      * @param image is drawable reference ID that corresponds to the Android version
      * */
+    public Word(String vMiwokWord, String vDefaultWord)
+    {
+        mMiwokWord = vMiwokWord;
+        mDefaultWord = vDefaultWord;
+
+    }
+
     public Word(String vMiwokWord, String vDefaultWord, int vImageView)
     {
         mMiwokWord = vMiwokWord;
