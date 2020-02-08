@@ -10,6 +10,8 @@ public class Word {
 
     private int mImageView = NO_IMAGE_PROVIDED;
 
+    private int mAudioResourceId;
+
 
 
 
@@ -20,18 +22,26 @@ public class Word {
      * @param vNumber is the corresponding Android version number (e.g. 2.3-2.7)
      * @param image is drawable reference ID that corresponds to the Android version
      * */
-    public Word(String vMiwokWord, String vDefaultWord)
+//    public Word(String vMiwokWord, String vDefaultWord)
+//    {
+//        mMiwokWord = vMiwokWord;
+//        mDefaultWord = vDefaultWord;
+//
+//    }
+
+    public Word(String vMiwokWord, String vDefaultWord, int vAudioResource)
     {
         mMiwokWord = vMiwokWord;
         mDefaultWord = vDefaultWord;
+        mAudioResourceId = vAudioResource;
 
     }
-
-    public Word(String vMiwokWord, String vDefaultWord, int vImageView)
+    public Word(String vMiwokWord, String vDefaultWord, int vImageView, int audioResourceId)
     {
         mMiwokWord = vMiwokWord;
         mDefaultWord = vDefaultWord;
         mImageView = vImageView;
+        mAudioResourceId = audioResourceId;
 
     }
 
@@ -53,5 +63,15 @@ public class Word {
         return mImageView != NO_IMAGE_PROVIDED;
     }
 
+    public int getAudioResourceId() { return mAudioResourceId; }
 
+    @Override
+    public String toString() {
+        return "Word{" +
+                "mMiwokWord='" + mMiwokWord + '\'' +
+                ", mDefaultWord='" + mDefaultWord + '\'' +
+                ", mImageView=" + mImageView +
+                ", mAudioResourceId=" + mAudioResourceId +
+                '}';
+    }
 }
