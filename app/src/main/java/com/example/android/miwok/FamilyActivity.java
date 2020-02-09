@@ -12,6 +12,8 @@ import java.util.ArrayList;
 
 public class FamilyActivity extends AppCompatActivity {
 
+    //Fix family and phrases activity
+
     private MediaPlayer mMediaPlayer;
 
     private void releaseMediaPlayer() {
