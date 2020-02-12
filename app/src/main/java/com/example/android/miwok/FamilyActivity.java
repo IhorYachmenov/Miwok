@@ -10,11 +10,29 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import static android.media.AudioManager.AUDIOFOCUS_LOSS_TRANSIENT;
+
 public class FamilyActivity extends AppCompatActivity {
 
     //Fix family and phrases activity
 
     private MediaPlayer mMediaPlayer;
+    private AudioManager mAudioManager;
+
+    AudioManager.OnAudioFocusChangeListener mOnAudioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
+        public void onAudioFocusChange(int focusChange) {
+            if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT || focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK){
+            // Pause playback
+                mMediaPlayer.pause();
+                mMediaPlayer.seekTo(0);
+        } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
+            // Resume playback
+                mMediaPlayer.start();
+        } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+                releaseMediaPlayer();
+        }
+    }
+};
 
     private void releaseMediaPlayer() {
         // If the media player is not null, then it may be currently playing a sound.
@@ -27,6 +45,9 @@ public class FamilyActivity extends AppCompatActivity {
             // setting the media player to null is an easy way to tell that the media player
             // is not configured to play an audio file at the moment.
             mMediaPlayer = null;
+
+            // Abandon audio focus when playback complete
+            mAudioManager .abandonAudioFocus(mOnAudioFocusChangeListener);
         }
     }
     /**
@@ -83,14 +104,38 @@ public class FamilyActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 releaseMediaPlayer();
                 Word word = words.get(i);
-                mMediaPlayer =  MediaPlayer.create(FamilyActivity.this, word.getAudioResourceId());
-                mMediaPlayer.start();
 
-                // Setup a listener on the media player, so that we can stop and release the
-                // media player once the sound has finished playing.
-                mMediaPlayer.setOnCompletionListener(mCompletionListener);
+                // Request audio focus for playback
+                int result = mAudioManager.requestAudioFocus(mOnAudioFocusChangeListener,
+                        // Use the music stream.
+                        AudioManager.STREAM_MUSIC,
+                        // Request permanent focus.
+                        AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+
+                if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                    // Start playback
+                  //  mAudioManager.registerMediaButtonEventReceiver(RemoteControlReciever);
+                    //We have a audio focus now.
+
+                    //Create and setup the Link MediaPlayer for the audio resource associate with the current world
+                    mMediaPlayer =  MediaPlayer.create(FamilyActivity.this, word.getAudioResourceId());
+                    mMediaPlayer.start();
+
+                    // Setup a listener on the media player, so that we can stop and release the
+                    // media player once the sound has finished playing.
+                    mMediaPlayer.setOnCompletionListener(mCompletionListener);
+                }
+
+
             }
         });
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        releaseMediaPlayer();
     }
 }
