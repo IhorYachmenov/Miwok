@@ -86,14 +86,16 @@ public class ColorsActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                //releaseMediaPlayer();
+
                 Word word = words.get(i);
-               // mMediaPlayer =  MediaPlayer.create(ColorsActivity.this, word.getAudioResourceId());
+                // mMediaPlayer =  MediaPlayer.create(ColorsActivity.this, word.getAudioResourceId());
                 //mMediaPlayer.start();
+
+                releaseMediaPlayer();
 
                 // Setup a listener on the media player, so that we can stop and release the
                 // media player once the sound has finished playing.
-               // mMediaPlayer.setOnCompletionListener(mCompletionListener);
+                // mMediaPlayer.setOnCompletionListener(mCompletionListener);
 
                 int result = mAudioManager.requestAudioFocus(mOnAudioFocusChangeListener,
                         AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
@@ -118,10 +120,10 @@ public class ColorsActivity extends AppCompatActivity {
 
     private void releaseMediaPlayer() {
         // If the media player is not null, then it may be currently playing a sound.
-       if (mMediaPlayer != null) {
+        if (mMediaPlayer != null) {
             // Regardless of the current state of the media player, release its resources
             // because we no longer need it.
-            //mMediaPlayer.release();
+            mMediaPlayer.release();
 
             // Set the media player back to null. For our code, we've decided that
             // setting the media player to null is an easy way to tell that the media player

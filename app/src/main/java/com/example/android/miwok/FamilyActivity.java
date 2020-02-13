@@ -1,5 +1,6 @@
 package com.example.android.miwok;
 
+import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
@@ -19,20 +20,27 @@ public class FamilyActivity extends AppCompatActivity {
     private MediaPlayer mMediaPlayer;
     private AudioManager mAudioManager;
 
+
+    // Managing Audio Focus
+    // See audio focus state
+    // 2. Create an instance of AudioManager.OnAudioFocusChangeListener and implement callback method
+    // 3. Adapt playback behavior when audio focus state changes
     AudioManager.OnAudioFocusChangeListener mOnAudioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
         public void onAudioFocusChange(int focusChange) {
-            if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT || focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK){
-            // Pause playback
+            if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT || focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
+                // Pause playback
                 mMediaPlayer.pause();
+                //Start at beginning audio file
                 mMediaPlayer.seekTo(0);
-        } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
-            // Resume playback
+            } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
+                // Resume playback
                 mMediaPlayer.start();
-        } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+            } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+                // Stop playback
                 releaseMediaPlayer();
+            }
         }
-    }
-};
+    };
 
     private void releaseMediaPlayer() {
         // If the media player is not null, then it may be currently playing a sound.
@@ -47,9 +55,10 @@ public class FamilyActivity extends AppCompatActivity {
             mMediaPlayer = null;
 
             // Abandon audio focus when playback complete
-            mAudioManager .abandonAudioFocus(mOnAudioFocusChangeListener);
+            mAudioManager.abandonAudioFocus(mOnAudioFocusChangeListener);
         }
     }
+
     /**
      * This listener gets triggered when the {@link MediaPlayer} has completed
      * playing the audio file.
@@ -66,6 +75,10 @@ public class FamilyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_family);
+
+        //Create ant setup {@ling AudioManager} to request audio focus
+        //Initialize audio manager
+        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
         final ArrayList<Word> words = new ArrayList<Word>();
         words.add(new Word("father", "әpә", R.drawable.family_father, R.raw.family_father));
@@ -102,10 +115,17 @@ public class FamilyActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                releaseMediaPlayer();
+                // Get the {@link Word} object at rhe given position the user clicked on
                 Word word = words.get(i);
 
+                // Release the media player if it currently exists because we are about to
+                // play a different sound file.
+                releaseMediaPlayer();
+
                 // Request audio focus for playback
+                // Request audio focus so in order to play the audio file. The app needs to play a
+                // short audio file, so we will request audio focus with a short amount of time
+                // with AUDIOFOCUS_GAIN_TRANSIENT.
                 int result = mAudioManager.requestAudioFocus(mOnAudioFocusChangeListener,
                         // Use the music stream.
                         AudioManager.STREAM_MUSIC,
@@ -113,12 +133,16 @@ public class FamilyActivity extends AppCompatActivity {
                         AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
 
                 if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                    // Start playback
-                  //  mAudioManager.registerMediaButtonEventReceiver(RemoteControlReciever);
+
+                    /*mAudioManager.registerMediaButtonEventReceiver(RemoteControlReciever);
+                    We aren't removing the code, we are just nesting it into if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {*/
+
                     //We have a audio focus now.
 
                     //Create and setup the Link MediaPlayer for the audio resource associate with the current world
-                    mMediaPlayer =  MediaPlayer.create(FamilyActivity.this, word.getAudioResourceId());
+                    mMediaPlayer = MediaPlayer.create(FamilyActivity.this, word.getAudioResourceId());
+
+                    // Start the audio file
                     mMediaPlayer.start();
 
                     // Setup a listener on the media player, so that we can stop and release the
